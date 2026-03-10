@@ -27,13 +27,13 @@ jobs:
         run: dotnet build InventorySystem.API/InventorySystem.API.csproj --configuration Release
       
       - name: dotnet publish
-        run: dotnet publish InventorySystem.API/InventorySystem.API.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp /p:UseAppHost=false
-
+        run: dotnet publish InventorySystem.API/InventorySystem.API.csproj -c Release -o ./publish
+      
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ./publish
 
   deploy:
     runs-on: ubuntu-latest
@@ -54,4 +54,5 @@ jobs:
           package: .
 
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B294C798DBE84C9AB1170746A0D6A2C1 }}
+
 

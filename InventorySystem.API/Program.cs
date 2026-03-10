@@ -15,7 +15,7 @@ builder.Services.AddDbContext<InventoryDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// MediatR (Application assembly)
+// MediatR
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateWarehouse).Assembly));
 
@@ -26,15 +26,14 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IInventoryDbContext>(sp =>
     sp.GetRequiredService<InventoryDbContext>());
 
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    // Use full type name to avoid collisions (CreateWarehouse+Command vs UpdateWarehouse+Command)
     c.CustomSchemaIds(type => type.FullName!.Replace("+", "."));
 });
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -42,5 +41,9 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.MapControllers();
+
+// redirect root to swagger
+app.MapGet("/", () => Results.Redirect("/swagger"))
+    .ExcludeFromDescription();
 
 app.Run();

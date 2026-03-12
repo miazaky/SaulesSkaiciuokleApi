@@ -38,9 +38,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReact",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            policy.WithOrigins(
+                "http://localhost:5173",
+                "https://jolly-mushroom-0c7d4a810.1.azurestaticapps.net"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
         });
 });
 

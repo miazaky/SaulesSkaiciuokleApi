@@ -60,4 +60,6 @@ app.MapControllers();
 app.MapGet("/", () => Results.Redirect("/swagger"))
     .ExcludeFromDescription();
 
+app.MapGet("/health", () => "Inventory API is running");
+
 app.Run();

@@ -18,22 +18,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.x'
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: Publish
+        run: dotnet publish InventorySystem.API/InventorySystem.API.csproj -c Release -o publish
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: app
+          path: publish
 
   deploy:
     runs-on: ubuntu-latest
@@ -51,5 +54,6 @@ jobs:
         with:
           app-name: 'solar-inventory'
           slot-name: 'Production'
-          package: .
+          package: publish
+
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BF730069280A4CEE831F95D81EE454C8 }}
